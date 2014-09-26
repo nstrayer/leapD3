@@ -1,15 +1,10 @@
 body {
-/*	background: #000;*/
 	overflow: hidden;
 }
 
-/*circle {
-	fill: #2A8FBD;
-	stroke-width: 2px;
-}*/
-
 svg {
     min-height: 650px;
-    pointer-events: all;
-    width: 100%;
+    margin: 0 auto;
+/*    pointer-events: all;*/
+/*    width: 100%;*/
 }
