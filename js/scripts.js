@@ -1,6 +1,6 @@
 var width	= parseInt(d3.select("body").style("width").slice(0,-2)),
 	// height	= parseInt(d3.select("body").style("height").slice(0,-2));
-	height  = 600;
+	height  = 800;
 
 var posX,
 	posY,
@@ -64,28 +64,46 @@ function isMin(value, min) {
 }
 
 
-var introText = ["Welcome to the Leap Motion + d3.js demo. Hover your hands over the Leap to get started"]
+var introText = ["Close hand into fist to return to the intro page.",
+				 "Welcome to my Leap Motion + d3.js demo. Hold your hands over the Leap to get started.",
+				 "Hint: Explore the boundries of what the Leap can see to calibrate the visualization."]
 
 svg.selectAll("text")
 	.data(introText)
 	.enter()
 	.append("text")
 	.attr("x", width/2)
-	.attr("y", height/2)
-	.attr("fill", "white")
+	.attr("y", function(d,i) {return (25 + ((height/3) - 15 )*i) })
+	.attr("fill", function(d,i) {
+		if (i == 0)	{return "black"
+		} else { return "white"}
+	})
 	.attr("font-family", "optima")
 	.attr("text-anchor", "middle")
+	.attr("font-size", function(d,i){
+		if (i == 1){
+			return 20
+		} else {
+			return 15
+		} 
+	})
 	.text(function(d){return d})
 
 var fresh = true 
 
 Leap.loop(function(frame) {
-	if (fresh){
-		if (frame.pointables.length > 0){
+	if (frame.pointables.length > 0){
+
+		if (fresh){
 			d3.select("svg").style("background", "white") //Change the background color
 			fresh = false
 		}
+		if(frame.hands[0].grabStrength ==1){
+			d3.select("svg").style("background", "black")
+			fresh = true
+		}
 	}
+
 
 	for (var i = 0; i < frame.pointables.length; i++) {
 		finger = frame.pointables[i];
