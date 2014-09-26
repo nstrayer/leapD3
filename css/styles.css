@@ -4,7 +4,11 @@ body {
 
 svg {
     min-height: 650px;
-    margin: 0 auto;
+   /* margin: 0 auto;*/
 /*    pointer-events: all;*/
 /*    width: 100%;*/
+}
+
+#container {
+	text-align: center;
 }

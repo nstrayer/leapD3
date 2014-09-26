@@ -1,7 +1,6 @@
-var windowWidth		= d3.select("body").style("width"),
-	windowHeight	= d3.select("body").style("height"),
-	width 			= 1000,
-	height 			= 500;
+var width	= parseInt(d3.select("body").style("width").slice(0,-2)),
+	// height	= parseInt(d3.select("body").style("height").slice(0,-2));
+	height  = 600;
 
 var posX,
 	posY,
@@ -12,10 +11,11 @@ var xRange = [10,15],  //Set up very conservative ranges at first. Range[0] is m
 	yRange = [100,105],
 	zRange = [10,15];
 
-var svg = d3.select("body")
+var svg = d3.select("#container")
 	.append("svg")
-	.attr("width", windowWidth)
-	.attr("height", windowHeight);
+	.attr("width", width)
+	.attr("height", height)
+	.style("background", "black");
 
 xScale = d3.scale.linear()  //Set up the scales for translating raw coordinates into pixels
 			.domain(xRange)
@@ -63,7 +63,30 @@ function isMin(value, min) {
 	}
 }
 
+
+var introText = ["Welcome to the Leap Motion + d3.js demo. Hover your hands over the Leap to get started"]
+
+svg.selectAll("text")
+	.data(introText)
+	.enter()
+	.append("text")
+	.attr("x", width/2)
+	.attr("y", height/2)
+	.attr("fill", "white")
+	.attr("font-family", "optima")
+	.attr("text-anchor", "middle")
+	.text(function(d){return d})
+
+var fresh = true 
+
 Leap.loop(function(frame) {
+	if (fresh){
+		if (frame.pointables.length > 0){
+			d3.select("svg").style("background", "white") //Change the background color
+			fresh = false
+		}
+	}
+
 	for (var i = 0; i < frame.pointables.length; i++) {
 		finger = frame.pointables[i];
 		var x = finger.tipPosition[0], //Grab the position of fingertips
