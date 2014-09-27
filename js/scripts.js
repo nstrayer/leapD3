@@ -92,7 +92,9 @@ svg.selectAll("text")
 var fresh = true 
 
 Leap.loop(function(frame) {
+
 	if (frame.pointables.length > 0){
+		console.log(frame)
 
 		if (fresh){
 			d3.select("svg").style("background", "white") //Change the background color
@@ -102,31 +104,32 @@ Leap.loop(function(frame) {
 			d3.select("svg").style("background", "black")
 			fresh = true
 		}
-	}
+	
+		for (var i = 0; i < frame.pointables.length; i++) {
+			if (frame.pointables[i].extended){
+				finger = frame.pointables[i];
+				var x = finger.tipPosition[0], //Grab the position of fingertips
+					y = finger.tipPosition[1],
+					z = finger.tipPosition[2];
 
+				xRange[1] = isMax(x, xRange[1]) //Update the maximum range
+				yRange[1] = isMax(y, yRange[1])
+				zRange[1] = isMax(z, zRange[1])
 
-	for (var i = 0; i < frame.pointables.length; i++) {
-		finger = frame.pointables[i];
-		var x = finger.tipPosition[0], //Grab the position of fingertips
-			y = finger.tipPosition[1],
-			z = finger.tipPosition[2];
+				xRange[0] = isMin(x, xRange[0]) //Update the minumum range
+				yRange[0] = isMin(y, yRange[0])
+				zRange[0] = isMin(z, zRange[0])
 
-		xRange[1] = isMax(x, xRange[1]) //Update the maximum range
-		yRange[1] = isMax(y, yRange[1])
-		zRange[1] = isMax(z, zRange[1])
+				xScale.domain(xRange) //Update the domains of the scales
+				yScale.domain(yRange)
+				zScale.domain(zRange)
 
-		xRange[0] = isMin(x, xRange[0]) //Update the minumum range
-		yRange[0] = isMin(y, yRange[0])
-		zRange[0] = isMin(z, zRange[0])
+				posX = xScale(x); //Run the raw xyz values through their scaling functions
+				posY = yScale(y);
+				posZ = zScale(z);
 
-		xScale.domain(xRange) //Update the domains of the scales
-		yScale.domain(yRange)
-		zScale.domain(zRange)
-
-		posX = xScale(x); //Run the raw xyz values through their scaling functions
-		posY = yScale(y);
-		posZ = zScale(z);
-
-		position(posX, posY, posZ,i); //Draw the circles
-	}
+				position(posX, posY, posZ,i);
+			} //Closes if finger extended statement
+		}//Closes for loop
+	}//closes if hand detected statement
 });
